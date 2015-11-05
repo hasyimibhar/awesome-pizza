@@ -140,10 +140,10 @@ return [
         /*
          * Application Service Providers...
          */
-        App\Providers\AppServiceProvider::class,
-        App\Providers\AuthServiceProvider::class,
-        App\Providers\EventServiceProvider::class,
-        App\Providers\RouteServiceProvider::class,
+        AwesomePizza\Providers\AppServiceProvider::class,
+        AwesomePizza\Providers\AuthServiceProvider::class,
+        AwesomePizza\Providers\EventServiceProvider::class,
+        AwesomePizza\Providers\RouteServiceProvider::class,
 
     ],
 
