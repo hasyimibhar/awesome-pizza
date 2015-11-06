@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use AwesomePizza\Menu\Pizza;
 use AwesomePizza\Menu\Crust;
+use AwesomePizza\Menu\ServingSize;
 
 class MenuControllerTest extends \Codeception\TestCase\Test
 {
@@ -405,6 +406,57 @@ class MenuControllerTest extends \Codeception\TestCase\Test
 
             $controller->getCrust($crustRepository, 'test');
         }, ['throws' => 'Symfony\Component\HttpKernel\Exception\NotFoundHttpException']);
+    }
+
+    public function testGetServingSizesReturnsNoSize()
+    {
+        $this->specify("getServingSizes should return empty collection", function() {
+            $controller = new MenuController();
+            $sizeRepository = m::mock('AwesomePizza\Menu\ServingSizeRepositoryContract')
+                ->shouldReceive('all')
+                ->once()
+                ->andReturn(new Collection())
+                ->mock();
+
+            $sizes = $controller->getServingSizes($sizeRepository);
+
+            verify($sizes)->notNull();
+            verify($sizes->count())->equals(0);
+        });
+    }
+
+    public function testGetServingSizesReturnsOneSize()
+    {
+        $this->specify("getServingSizes should return one size", function() {
+            $controller = new MenuController();
+            $sizeRepository = m::mock('AwesomePizza\Menu\ServingSizeRepositoryContract')
+                ->shouldReceive('all')
+                ->once()
+                ->andReturn(new Collection([ new ServingSize() ]))
+                ->mock();
+
+            $sizes = $controller->getServingSizes($sizeRepository);
+
+            verify($sizes)->notNull();
+            verify($sizes->count())->equals(1);
+        });
+    }
+
+    public function testGetServingSizesReturnsSomeSizes()
+    {
+        $this->specify("getServingSizes should return some sizes", function() {
+            $controller = new MenuController();
+            $sizeRepository = m::mock('AwesomePizza\Menu\ServingSizeRepositoryContract')
+                ->shouldReceive('all')
+                ->once()
+                ->andReturn(new Collection([ new ServingSize(), new ServingSize(), new ServingSize() ]))
+                ->mock();
+
+            $sizes = $controller->getServingSizes($sizeRepository);
+
+            verify($sizes)->notNull();
+            verify($sizes->count())->equals(3);
+        });
     }
 
     protected function generatePizzas($quantity)

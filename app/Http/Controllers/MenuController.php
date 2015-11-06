@@ -5,6 +5,7 @@ namespace AwesomePizza\Http\Controllers;
 use Illuminate\Http\Request;
 use AwesomePizza\Menu\PizzaRepositoryContract;
 use AwesomePizza\Menu\CrustRepositoryContract;
+use AwesomePizza\Menu\ServingSizeRepositoryContract;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class MenuController extends Controller
@@ -84,5 +85,16 @@ class MenuController extends Controller
         } else {
             throw new NotFoundHttpException();
         }
+    }
+
+    /**
+     * Get all possible serving sizes on the menu.
+     *
+     * @param \AwesomePizza\Menu\ServingSizeRepositoryContract $servingSizeRepository
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getServingSizes(ServingSizeRepositoryContract $servingSizeRepository)
+    {
+        return $servingSizeRepository->all();
     }
 }
