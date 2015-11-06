@@ -4,6 +4,7 @@ namespace AwesomePizza\Http\Controllers;
 
 use Illuminate\Http\Request;
 use AwesomePizza\Menu\PizzaRepositoryContract;
+use AwesomePizza\Menu\CrustRepositoryContract;
 
 class MenuController extends Controller
 {
@@ -14,6 +15,7 @@ class MenuController extends Controller
 
     /**
      * Get all available pizzas on the menu.
+     *
      * @param \Illuminate\Http\Request $request
      * @param \AwesomePizza\Menu\PizzaRepositoryContract $pizzaRepository
      * @return \Illuminate\Database\Eloquent\Collection
@@ -34,5 +36,16 @@ class MenuController extends Controller
         }
 
         return $pizzaRepository->take($quantity, $offset);
+    }
+
+    /**
+     * Get all available crusts on the menu.
+     *
+     * @param \AwesomePizza\Menu\CrustRepositoryContract $crustRepository
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getCrusts(CrustRepositoryContract $crustRepository)
+    {
+        return $crustRepository->all();
     }
 }

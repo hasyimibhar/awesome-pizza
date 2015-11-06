@@ -6,6 +6,7 @@ use \Mockery as m;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use AwesomePizza\Pizza;
+use AwesomePizza\Crust;
 
 class MenuControllerTest extends \Codeception\TestCase\Test
 {
@@ -256,6 +257,57 @@ class MenuControllerTest extends \Codeception\TestCase\Test
 
             verify($pizzas)->notNull();
             verify($pizzas->count())->equals(MenuController::PIZZAS_PER_PAGE);
+        });
+    }
+
+    public function testGetCrustsReturnsNoCrust()
+    {
+        $this->specify("getCrusts should return empty collection", function() {
+            $controller = new MenuController();
+            $crustRepository = m::mock('AwesomePizza\Menu\CrustRepositoryContract')
+                ->shouldReceive('all')
+                ->once()
+                ->andReturn(new Collection())
+                ->mock();
+
+            $crusts = $controller->getCrusts($crustRepository);
+
+            verify($crusts)->notNull();
+            verify($crusts->count())->equals(0);
+        });
+    }
+
+    public function testGetCrustsReturnsOneCrust()
+    {
+        $this->specify("getCrusts should return one crust", function() {
+            $controller = new MenuController();
+            $crustRepository = m::mock('AwesomePizza\Menu\CrustRepositoryContract')
+                ->shouldReceive('all')
+                ->once()
+                ->andReturn(new Collection([ new Crust() ]))
+                ->mock();
+
+            $crusts = $controller->getCrusts($crustRepository);
+
+            verify($crusts)->notNull();
+            verify($crusts->count())->equals(1);
+        });
+    }
+
+    public function testGetCrustsReturnsSomeCrusts()
+    {
+        $this->specify("getCrusts should return empty collection", function() {
+            $controller = new MenuController();
+            $crustRepository = m::mock('AwesomePizza\Menu\CrustRepositoryContract')
+                ->shouldReceive('all')
+                ->once()
+                ->andReturn(new Collection([ new Crust(), new Crust(), new Crust(), new Crust() ]))
+                ->mock();
+
+            $crusts = $controller->getCrusts($crustRepository);
+
+            verify($crusts)->notNull();
+            verify($crusts->count())->equals(4);
         });
     }
 

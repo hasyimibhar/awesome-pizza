@@ -14,6 +14,7 @@ class MenuServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->bind('AwesomePizza\Menu\PizzaRepositoryContract', 'AwesomePizza\Menu\PizzaRepository');
+        $this->app->bind('AwesomePizza\Menu\CrustRepositoryContract', 'AwesomePizza\Menu\CrustRepository');
     }
 
     /**
@@ -25,6 +26,7 @@ class MenuServiceProvider extends ServiceProvider
     {
         return [
             'AwesomePizza\Menu\PizzaRepositoryContract',
+            'AwesomePizza\Menu\CrustRepositoryContract',
         ];
     }
 }
