@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use AwesomePizza\Menu\PizzaRepositoryContract;
 use AwesomePizza\Menu\CrustRepositoryContract;
 use AwesomePizza\Menu\ServingSizeRepositoryContract;
+use AwesomePizza\Menu\ToppingRepositoryContract;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class MenuController extends Controller
@@ -116,4 +117,32 @@ class MenuController extends Controller
         }
     }
 
+    /**
+     * Get all possible toppings on the menu.
+     *
+     * @param \AwesomePizza\Menu\ToppingRepositoryContract $toppingRepository
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getToppings(ToppingRepositoryContract $toppingRepository)
+    {
+        return $toppingRepository->all();
+    }
+
+    /**
+     * Get a single topping on the menu.
+     *
+     * @param \AwesomePizza\Menu\ToppingRepositoryContract $toppingRepository
+     * @param int $toppingId
+     * @return \AwesomePizza\Menu\Topping
+     */
+    public function getTopping(ToppingRepositoryContract $toppingRepository, $toppingId)
+    {
+        $topping = $toppingRepository->find($toppingId);
+
+        if ($topping != null) {
+            return $topping;
+        } else {
+            throw new NotFoundHttpException();
+        }
+    }
 }

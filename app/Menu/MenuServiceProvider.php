@@ -16,6 +16,7 @@ class MenuServiceProvider extends ServiceProvider
         $this->app->bind('AwesomePizza\Menu\PizzaRepositoryContract', 'AwesomePizza\Menu\PizzaRepository');
         $this->app->bind('AwesomePizza\Menu\CrustRepositoryContract', 'AwesomePizza\Menu\CrustRepository');
         $this->app->bind('AwesomePizza\Menu\ServingSizeRepositoryContract', 'AwesomePizza\Menu\ServingSizeRepository');
+        $this->app->bind('AwesomePizza\Menu\ToppingRepositoryContract', 'AwesomePizza\Menu\ToppingRepository');
     }
 
     /**
@@ -29,6 +30,7 @@ class MenuServiceProvider extends ServiceProvider
             'AwesomePizza\Menu\PizzaRepositoryContract',
             'AwesomePizza\Menu\CrustRepositoryContract',
             'AwesomePizza\Menu\ServingSizeRepositoryContract',
+            'AwesomePizza\Menu\ToppingRepositoryContract',
         ];
     }
 }

@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use AwesomePizza\Menu\Pizza;
 use AwesomePizza\Menu\Crust;
 use AwesomePizza\Menu\ServingSize;
+use AwesomePizza\Menu\Topping;
 
 class MenuControllerTest extends \Codeception\TestCase\Test
 {
@@ -504,6 +505,105 @@ class MenuControllerTest extends \Codeception\TestCase\Test
                 ->mock();
 
             $controller->getServingSize($servingSizeRepository, 'nope');
+        }, ['throws' => 'Symfony\Component\HttpKernel\Exception\NotFoundHttpException']);
+    }
+
+    public function testGetToppingsReturnsNoTopping()
+    {
+        $this->specify("getToppings should return empty collection", function() {
+            $controller = new MenuController();
+            $toppingRepository = m::mock('AwesomePizza\Menu\ToppingRepositoryContract')
+                ->shouldReceive('all')
+                ->once()
+                ->andReturn(new Collection())
+                ->mock();
+
+            $sizes = $controller->getToppings($toppingRepository);
+
+            verify($sizes)->notNull();
+            verify($sizes->count())->equals(0);
+        });
+    }
+
+    public function testGetToppingsReturnsOneTopping()
+    {
+        $this->specify("getToppings should return one topping", function() {
+            $controller = new MenuController();
+            $toppingRepository = m::mock('AwesomePizza\Menu\ToppingRepositoryContract')
+                ->shouldReceive('all')
+                ->once()
+                ->andReturn(new Collection([ new Topping() ]))
+                ->mock();
+
+            $sizes = $controller->getToppings($toppingRepository);
+
+            verify($sizes)->notNull();
+            verify($sizes->count())->equals(1);
+        });
+    }
+
+    public function testGetToppingsReturnsSomeToppings()
+    {
+        $this->specify("getToppings should return some toppings", function() {
+            $controller = new MenuController();
+            $toppingRepository = m::mock('AwesomePizza\Menu\ToppingRepositoryContract')
+                ->shouldReceive('all')
+                ->once()
+                ->andReturn(new Collection([ new Topping(), new Topping(), new Topping(), new Topping() ]))
+                ->mock();
+
+            $sizes = $controller->getToppings($toppingRepository);
+
+            verify($sizes)->notNull();
+            verify($sizes->count())->equals(4);
+        });
+    }
+
+    public function testGetToppingReturnsOneTopping()
+    {
+        $this->specify("getTopping should return one crust", function() {
+            $controller = new MenuController();
+            $toppingRepository = m::mock('AwesomePizza\Menu\ToppingRepositoryContract')
+                ->shouldReceive('find')
+                ->with(53)
+                ->once()
+                ->andReturn(new ServingSize(['id' => 53]))
+                ->mock();
+
+            $crust = $controller->getTopping($toppingRepository, 53);
+
+            verify($crust)->notNull();
+            verify($crust->id)->equals(53);
+        });
+    }
+
+    public function testGetToppingReturnsNoTopping()
+    {
+        $this->specify("getTopping should throw NotFoundHttpException", function() {
+            $controller = new MenuController();
+            $toppingRepository = m::mock('AwesomePizza\Menu\ToppingRepositoryContract')
+                ->shouldReceive('find')
+                ->with(91)
+                ->once()
+                ->andReturn(null)
+                ->mock();
+
+            $controller->getTopping($toppingRepository, 91);
+        }, ['throws' => 'Symfony\Component\HttpKernel\Exception\NotFoundHttpException']);
+    }
+
+    public function testGetToppingWithNonNumeric()
+    {
+        $this->specify("getTopping should throw NotFoundHttpException", function() {
+            $controller = new MenuController();
+            $toppingRepository = m::mock('AwesomePizza\Menu\ToppingRepositoryContract')
+                ->shouldReceive('find')
+                ->with('hello, world')
+                ->once()
+                ->andReturn(null)
+                ->mock();
+
+            $controller->getTopping($toppingRepository, 'hello, world');
         }, ['throws' => 'Symfony\Component\HttpKernel\Exception\NotFoundHttpException']);
     }
 
