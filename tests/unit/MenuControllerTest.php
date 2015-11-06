@@ -311,6 +311,54 @@ class MenuControllerTest extends \Codeception\TestCase\Test
         });
     }
 
+    public function testGetCrustReturnsOneCrust()
+    {
+        $this->specify("getCrust should return one crust", function() {
+            $controller = new MenuController();
+            $crustRepository = m::mock('AwesomePizza\Menu\CrustRepositoryContract')
+                ->shouldReceive('find')
+                ->with(123)
+                ->once()
+                ->andReturn(new Crust(['id' => 123]))
+                ->mock();
+
+            $crust = $controller->getCrust($crustRepository, 123);
+
+            verify($crust)->notNull();
+            verify($crust->id)->equals(123);
+        });
+    }
+
+    public function testGetCrustReturnsNoCrust()
+    {
+        $this->specify("getCrust should throw NotFoundHttpException", function() {
+            $controller = new MenuController();
+            $crustRepository = m::mock('AwesomePizza\Menu\CrustRepositoryContract')
+                ->shouldReceive('find')
+                ->with(456)
+                ->once()
+                ->andReturn(null)
+                ->mock();
+
+            $controller->getCrust($crustRepository, 456);
+        }, ['throws' => 'Symfony\Component\HttpKernel\Exception\NotFoundHttpException']);
+    }
+
+    public function testGetCrustWithNonNumeric()
+    {
+        $this->specify("getCrust should throw NotFoundHttpException", function() {
+            $controller = new MenuController();
+            $crustRepository = m::mock('AwesomePizza\Menu\CrustRepositoryContract')
+                ->shouldReceive('find')
+                ->with('test')
+                ->once()
+                ->andReturn(null)
+                ->mock();
+
+            $controller->getCrust($crustRepository, 'test');
+        }, ['throws' => 'Symfony\Component\HttpKernel\Exception\NotFoundHttpException']);
+    }
+
     protected function generatePizzas($quantity)
     {
         $pizzas = new Collection();

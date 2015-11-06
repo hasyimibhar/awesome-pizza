@@ -5,6 +5,7 @@ namespace AwesomePizza\Http\Controllers;
 use Illuminate\Http\Request;
 use AwesomePizza\Menu\PizzaRepositoryContract;
 use AwesomePizza\Menu\CrustRepositoryContract;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class MenuController extends Controller
 {
@@ -47,5 +48,23 @@ class MenuController extends Controller
     public function getCrusts(CrustRepositoryContract $crustRepository)
     {
         return $crustRepository->all();
+    }
+
+    /**
+     * Get a single crust on the menu.
+     *
+     * @param \AwesomePizza\Menu\CrustRepositoryContract $crustRepository
+     * @param int $crustId
+     * @return \AwesomePizza\Crust
+     */
+    public function getCrust(CrustRepositoryContract $crustRepository, $crustId)
+    {
+        $crust = $crustRepository->find($crustId);
+
+        if ($crust != null) {
+            return $crust;
+        } else {
+            throw new NotFoundHttpException();
+        }
     }
 }
