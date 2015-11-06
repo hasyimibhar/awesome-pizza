@@ -110,6 +110,155 @@ class MenuControllerTest extends \Codeception\TestCase\Test
         });
     }
 
+    public function testGetPizzasOutsideOfRange()
+    {
+        $this->specify("when zero quantity is passed, the default quantity should be used", function() {
+            $controller = new MenuController();
+            $pizzaRepository = m::mock('AwesomePizza\Menu\PizzaRepositoryContract')
+                ->shouldReceive('take')
+                ->with(MenuController::PIZZAS_PER_PAGE, 0)
+                ->once()
+                ->andReturn($this->generatePizzas(5))
+                ->mock();
+
+            $pizzas = $controller->getPizzas(
+                new Request(['quantity' => 0, 'offset' => 0]),
+                $pizzaRepository
+            );
+
+            verify($pizzas)->notNull();
+            verify($pizzas->count())->equals(5);
+        });
+
+        $this->specify("when negative quantity is passed, the default quantity should be used", function() {
+            $controller = new MenuController();
+            $pizzaRepository = m::mock('AwesomePizza\Menu\PizzaRepositoryContract')
+                ->shouldReceive('take')
+                ->with(MenuController::PIZZAS_PER_PAGE, 0)
+                ->once()
+                ->andReturn($this->generatePizzas(5))
+                ->mock();
+
+            $pizzas = $controller->getPizzas(
+                new Request(['quantity' => -1, 'offset' => 0]),
+                $pizzaRepository
+            );
+
+            verify($pizzas)->notNull();
+            verify($pizzas->count())->equals(5);
+        });
+
+        $this->specify("when negative offset is passed, the default offset should be used", function() {
+            $controller = new MenuController();
+            $pizzaRepository = m::mock('AwesomePizza\Menu\PizzaRepositoryContract')
+                ->shouldReceive('take')
+                ->with(8, 0)
+                ->once()
+                ->andReturn($this->generatePizzas(5))
+                ->mock();
+
+            $pizzas = $controller->getPizzas(
+                new Request(['quantity' => 8, 'offset' => -1]),
+                $pizzaRepository
+            );
+
+            verify($pizzas)->notNull();
+            verify($pizzas->count())->equals(5);
+        });
+
+        $this->specify("when negative offset is passed and zero quantity is passed, the default values should be used", function() {
+            $controller = new MenuController();
+            $pizzaRepository = m::mock('AwesomePizza\Menu\PizzaRepositoryContract')
+                ->shouldReceive('take')
+                ->with(MenuController::PIZZAS_PER_PAGE, 0)
+                ->once()
+                ->andReturn($this->generatePizzas(5))
+                ->mock();
+
+            $pizzas = $controller->getPizzas(
+                new Request(['quantity' => 0, 'offset' => -1]),
+                $pizzaRepository
+            );
+
+            verify($pizzas)->notNull();
+            verify($pizzas->count())->equals(5);
+        });
+
+        $this->specify("when negative offset is passed and negative quantity is passed, the default values should be used", function() {
+            $controller = new MenuController();
+            $pizzaRepository = m::mock('AwesomePizza\Menu\PizzaRepositoryContract')
+                ->shouldReceive('take')
+                ->with(MenuController::PIZZAS_PER_PAGE, 0)
+                ->once()
+                ->andReturn($this->generatePizzas(5))
+                ->mock();
+
+            $pizzas = $controller->getPizzas(
+                new Request(['quantity' => -6, 'offset' => -1]),
+                $pizzaRepository
+            );
+            verify($pizzas)->notNull();
+            verify($pizzas->count())->equals(5);
+        });
+    }
+
+    public function testGetPizzasWithNonNumeric()
+    {
+        $this->specify("when string quantity is passed, the default value should be used", function() {
+            $controller = new MenuController();
+            $pizzaRepository = m::mock('AwesomePizza\Menu\PizzaRepositoryContract')
+                ->shouldReceive('take')
+                ->with(MenuController::PIZZAS_PER_PAGE, 3)
+                ->once()
+                ->andReturn($this->generatePizzas(MenuController::PIZZAS_PER_PAGE))
+                ->mock();
+
+            $pizzas = $controller->getPizzas(
+                new Request(['quantity' => 'foobar', 'offset' => 3]),
+                $pizzaRepository
+            );
+
+            verify($pizzas)->notNull();
+            verify($pizzas->count())->equals(MenuController::PIZZAS_PER_PAGE);
+        });
+
+        $this->specify("when string offset is passed, the default value should be used", function() {
+            $controller = new MenuController();
+            $pizzaRepository = m::mock('AwesomePizza\Menu\PizzaRepositoryContract')
+                ->shouldReceive('take')
+                ->with(7, 0)
+                ->once()
+                ->andReturn($this->generatePizzas(7))
+                ->mock();
+
+            $pizzas = $controller->getPizzas(
+                new Request(['quantity' => 7, 'offset' => 'hello, world!']),
+                $pizzaRepository
+            );
+
+            verify($pizzas)->notNull();
+            verify($pizzas->count())->equals(7);
+        });
+
+        $this->specify("when string quantity and offset are passed, the default values should be used", function() {
+            $controller = new MenuController();
+            $pizzaRepository = m::mock('AwesomePizza\Menu\PizzaRepositoryContract')
+                ->shouldReceive('take')
+                ->with(MenuController::PIZZAS_PER_PAGE, 0)
+                ->once()
+                ->andReturn($this->generatePizzas(MenuController::PIZZAS_PER_PAGE))
+                ->mock();
+
+            $pizzas = $controller->getPizzas(
+                new Request(['quantity' => 'i am', 'offset' => 'awesome']),
+                $pizzaRepository
+            );
+
+            verify($pizzas)->notNull();
+            verify($pizzas->count())->equals(MenuController::PIZZAS_PER_PAGE);
+        });
+    }
+
     protected function generatePizzas($quantity)
     {
         $pizzas = new Collection();

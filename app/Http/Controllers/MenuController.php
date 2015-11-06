@@ -25,6 +25,14 @@ class MenuController extends Controller
         $quantity = $request->input('quantity', MenuController::PIZZAS_PER_PAGE);
         $offset = $request->input('offset', 0);
 
+        if ($quantity <= 0 || !is_numeric($quantity)) {
+            $quantity = MenuController::PIZZAS_PER_PAGE;
+        }
+
+        if ($offset <= 0 || !is_numeric($offset)) {
+            $offset = 0;
+        }
+
         return $pizzaRepository->take($quantity, $offset);
     }
 }
