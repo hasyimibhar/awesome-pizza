@@ -11,7 +11,8 @@
         "codeception/mockery-module": "*",
         "mockery/mockery": "^0.9.4",
         "codeception/verify": "*",
-        "codeception/specify": "*"
+        "codeception/specify": "*",
+        "doctrine/dbal": "^2.5"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
