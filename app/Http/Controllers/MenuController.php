@@ -2,18 +2,29 @@
 
 namespace AwesomePizza\Http\Controllers;
 
+use Illuminate\Http\Request;
 use AwesomePizza\Menu\PizzaRepositoryContract;
 
 class MenuController extends Controller
 {
     /**
+     * Default quantity of pizzas returned.
+     */
+    const PIZZAS_PER_PAGE = 10;
+
+    /**
      * Get all available pizzas on the menu.
-     *
-     * @param \AwesomePizza\Menu\PizzaRepositoryContract $pizzas
+     * @param \Illuminate\Http\Request $request
+     * @param \AwesomePizza\Menu\PizzaRepositoryContract $pizzaRepository
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function getPizzas(PizzaRepositoryContract $pizzas)
-    {
-        return $pizzas->all();
+    public function getPizzas(
+        Request $request,
+        PizzaRepositoryContract $pizzaRepository
+    ) {
+        $quantity = $request->input('quantity', MenuController::PIZZAS_PER_PAGE);
+        $offset = $request->input('offset', 0);
+
+        return $pizzaRepository->take($quantity, $offset);
     }
 }

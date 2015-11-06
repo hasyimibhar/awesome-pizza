@@ -34,6 +34,21 @@ class PizzaRepository implements PizzaRepositoryContract
     }
 
     /**
+     * Get pizzas based on the given quantity and offset (for pagination).
+     *
+     * @param int $quantity
+     * @param int $offset
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function take($quantity, $offset)
+    {
+        return $this->model->query()
+            ->take($quantity)
+            ->skip($offset * $quantity)
+            ->get();
+    }
+
+    /**
      * Get a single pizza.
      *
      * @param int $pizzaId
