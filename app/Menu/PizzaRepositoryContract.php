@@ -24,7 +24,7 @@ interface PizzaRepositoryContract
      * Get a single pizza.
      *
      * @param int $pizzaId
-     * @return \AwesomePizza\Pizza
+     * @return \AwesomePizza\Menu\Pizza
      */
     public function find($pizzaId);
 }

@@ -44,7 +44,7 @@ class MenuController extends Controller
      *
      * @param \AwesomePizza\Menu\PizzaRepositoryContract $pizzaRepository
      * @param int $pizzaId
-     * @return \AwesomePizza\PIzza
+     * @return \AwesomePizza\Menu\Pizza
      */
     public function getPizza(PizzaRepositoryContract $pizzaRepository, $pizzaId)
     {
@@ -73,7 +73,7 @@ class MenuController extends Controller
      *
      * @param \AwesomePizza\Menu\CrustRepositoryContract $crustRepository
      * @param int $crustId
-     * @return \AwesomePizza\Crust
+     * @return \AwesomePizza\Menu\Crust
      */
     public function getCrust(CrustRepositoryContract $crustRepository, $crustId)
     {

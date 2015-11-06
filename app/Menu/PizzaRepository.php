@@ -2,21 +2,21 @@
 
 namespace AwesomePizza\Menu;
 
-use AwesomePizza\Pizza;
+use AwesomePizza\Menu\Pizza;
 
 class PizzaRepository implements PizzaRepositoryContract
 {
     /**
      * Pizza model.
      *
-     * @var \AwesomePizza\Pizza
+     * @var \AwesomePizza\Menu\Pizza
      */
     protected $model;
 
     /**
      * Creates a new instance of PizzaRepository.
      *
-     * @param \AwesomePizza\Pizza $model
+     * @param \AwesomePizza\Menu\Pizza $model
      */
     public function __construct(Pizza $model)
     {
@@ -52,7 +52,7 @@ class PizzaRepository implements PizzaRepositoryContract
      * Get a single pizza.
      *
      * @param int $pizzaId
-     * @return \AwesomePizza\Pizza
+     * @return \AwesomePizza\Menu\Pizza
      */
     public function find($pizzaId)
     {

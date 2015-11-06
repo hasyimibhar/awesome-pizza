@@ -1,6 +1,6 @@
 <?php
 
-namespace AwesomePizza;
+namespace AwesomePizza\Menu;
 
 use Illuminate\Database\Eloquent\Model;
 

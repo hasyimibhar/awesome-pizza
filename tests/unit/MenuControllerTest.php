@@ -5,8 +5,8 @@ use AwesomePizza\Menu\PizzaRepositoryContract;
 use \Mockery as m;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
-use AwesomePizza\Pizza;
-use AwesomePizza\Crust;
+use AwesomePizza\Menu\Pizza;
+use AwesomePizza\Menu\Crust;
 
 class MenuControllerTest extends \Codeception\TestCase\Test
 {

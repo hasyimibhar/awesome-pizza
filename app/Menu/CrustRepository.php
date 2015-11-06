@@ -2,21 +2,21 @@
 
 namespace AwesomePizza\Menu;
 
-use AwesomePizza\Crust;
+use AwesomePizza\Menu\Crust;
 
 class CrustRepository implements CrustRepositoryContract
 {
     /**
      * Crust model.
      *
-     * @var \AwesomePizza\Crust
+     * @var \AwesomePizza\Menu\Crust
      */
     protected $model;
 
     /**
      * Creates a new instance of CrustRepository.
      *
-     * @param \AwesomePizza\Crust $model
+     * @param \AwesomePizza\Menu\Crust $model
      */
     public function __construct(Crust $model)
     {
@@ -37,7 +37,7 @@ class CrustRepository implements CrustRepositoryContract
      * Get a single crust.
      *
      * @param int $crustId
-     * @return \AwesomePizza\Crust
+     * @return \AwesomePizza\Menu\Crust
      */
     public function find($crustId)
     {

@@ -15,7 +15,7 @@ interface CrustRepositoryContract
      * Get a single crust.
      *
      * @param int $crustId
-     * @return \AwesomePizza\Crust
+     * @return \AwesomePizza\Menu\Crust
      */
     public function find($crustId);
 }
