@@ -7,6 +7,13 @@ use Illuminate\Support\ServiceProvider;
 class MenuServiceProvider extends ServiceProvider
 {
     /**
+     * Indicates if loading of the provider is deferred.
+     *
+     * @var bool
+     */
+    protected $defer = true;
+
+    /**
      * Register any application services.
      *
      * @return void
