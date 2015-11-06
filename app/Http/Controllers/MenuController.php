@@ -40,6 +40,24 @@ class MenuController extends Controller
     }
 
     /**
+     * Get a single pizza on the menu.
+     *
+     * @param \AwesomePizza\Menu\PizzaRepositoryContract $pizzaRepository
+     * @param int $pizzaId
+     * @return \AwesomePizza\PIzza
+     */
+    public function getPizza(PizzaRepositoryContract $pizzaRepository, $pizzaId)
+    {
+        $pizza = $pizzaRepository->find($pizzaId);
+
+        if ($pizza != null) {
+            return $pizza;
+        } else {
+            throw new NotFoundHttpException();
+        }
+    }
+
+    /**
      * Get all available crusts on the menu.
      *
      * @param \AwesomePizza\Menu\CrustRepositoryContract $crustRepository

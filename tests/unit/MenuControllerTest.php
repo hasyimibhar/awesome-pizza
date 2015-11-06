@@ -260,6 +260,54 @@ class MenuControllerTest extends \Codeception\TestCase\Test
         });
     }
 
+    public function testGetPizzaReturnsOnePizza()
+    {
+        $this->specify("getPizza should return one pizza", function() {
+            $controller = new MenuController();
+            $pizzaRepository = m::mock('AwesomePizza\Menu\PizzaRepositoryContract')
+                ->shouldReceive('find')
+                ->with(42)
+                ->once()
+                ->andReturn(new Pizza(['id' => 42]))
+                ->mock();
+
+            $pizza = $controller->getPizza($pizzaRepository, 42);
+
+            verify($pizza)->notNull();
+            verify($pizza->id)->equals(42);
+        });
+    }
+
+    public function testGetPizzaReturnsNoPizza()
+    {
+        $this->specify("getPizzas should throw NotFoundHttpException", function() {
+            $controller = new MenuController();
+            $pizzaRepository = m::mock('AwesomePizza\Menu\PizzaRepositoryContract')
+                ->shouldReceive('find')
+                ->with(456)
+                ->once()
+                ->andReturn(null)
+                ->mock();
+
+            $controller->getPizza($pizzaRepository, 456);
+        }, ['throws' => 'Symfony\Component\HttpKernel\Exception\NotFoundHttpException']);
+    }
+
+    public function testGetPizzaWithNonNumeric()
+    {
+        $this->specify("getPizzas should throw NotFoundHttpException", function() {
+            $controller = new MenuController();
+            $pizzaRepository = m::mock('AwesomePizza\Menu\PizzaRepositoryContract')
+                ->shouldReceive('find')
+                ->with('test')
+                ->once()
+                ->andReturn(null)
+                ->mock();
+
+            $controller->getPizza($pizzaRepository, 'test');
+        }, ['throws' => 'Symfony\Component\HttpKernel\Exception\NotFoundHttpException']);
+    }
+
     public function testGetCrustsReturnsNoCrust()
     {
         $this->specify("getCrusts should return empty collection", function() {
