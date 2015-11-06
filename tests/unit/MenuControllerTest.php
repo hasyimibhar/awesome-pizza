@@ -459,6 +459,54 @@ class MenuControllerTest extends \Codeception\TestCase\Test
         });
     }
 
+    public function testGetServingSizeReturnsOneSize()
+    {
+        $this->specify("getServingSize should return one crust", function() {
+            $controller = new MenuController();
+            $servingSizeRepository = m::mock('AwesomePizza\Menu\ServingSizeRepositoryContract')
+                ->shouldReceive('find')
+                ->with(4582)
+                ->once()
+                ->andReturn(new ServingSize(['id' => 4582]))
+                ->mock();
+
+            $crust = $controller->getServingSize($servingSizeRepository, 4582);
+
+            verify($crust)->notNull();
+            verify($crust->id)->equals(4582);
+        });
+    }
+
+    public function testGetServingSizeReturnsNoSize()
+    {
+        $this->specify("getServingSize should throw NotFoundHttpException", function() {
+            $controller = new MenuController();
+            $servingSizeRepository = m::mock('AwesomePizza\Menu\ServingSizeRepositoryContract')
+                ->shouldReceive('find')
+                ->with(77)
+                ->once()
+                ->andReturn(null)
+                ->mock();
+
+            $controller->getServingSize($servingSizeRepository, 77);
+        }, ['throws' => 'Symfony\Component\HttpKernel\Exception\NotFoundHttpException']);
+    }
+
+    public function testGetServingSizeWithNonNumeric()
+    {
+        $this->specify("getServingSize should throw NotFoundHttpException", function() {
+            $controller = new MenuController();
+            $servingSizeRepository = m::mock('AwesomePizza\Menu\ServingSizeRepositoryContract')
+                ->shouldReceive('find')
+                ->with('nope')
+                ->once()
+                ->andReturn(null)
+                ->mock();
+
+            $controller->getServingSize($servingSizeRepository, 'nope');
+        }, ['throws' => 'Symfony\Component\HttpKernel\Exception\NotFoundHttpException']);
+    }
+
     protected function generatePizzas($quantity)
     {
         $pizzas = new Collection();

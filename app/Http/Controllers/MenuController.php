@@ -97,4 +97,23 @@ class MenuController extends Controller
     {
         return $servingSizeRepository->all();
     }
+
+    /**
+     * Get a single serving size on the menu.
+     *
+     * @param \AwesomePizza\Menu\ServingSizeRepositoryContract $servingSizeRepository
+     * @param int $sizeId
+     * @return \AwesomePizza\Menu\ServingSize
+     */
+    public function getServingSize(ServingSizeRepositoryContract $servingSizeRepository, $sizeId)
+    {
+        $size = $servingSizeRepository->find($sizeId);
+
+        if ($size != null) {
+            return $size;
+        } else {
+            throw new NotFoundHttpException();
+        }
+    }
+
 }
