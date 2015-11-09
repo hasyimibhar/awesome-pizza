@@ -147,7 +147,7 @@ class PizzaRepositoryTest extends \Codeception\TestCase\Test
 
     public function testFindWithInvalidId()
     {
-        $this->specify("find should return one pizza", function() {
+        $this->specify("find should return no pizza", function() {
             $now = date('Y-m-d H:i:s');
             $this->tester->haveInDatabase('pizzas', [
                 'id' => 19,
@@ -175,7 +175,7 @@ class PizzaRepositoryTest extends \Codeception\TestCase\Test
 
     public function testFindWithNoPizza()
     {
-        $this->specify("find should return one pizza", function() {
+        $this->specify("find should return no pizza", function() {
             $repository = new PizzaRepository($this->getDatabaseConnection());
 
             $pizza = $repository->find(19);
