@@ -10,6 +10,9 @@ services:
 before_install:
   - composer self-update
   - mysql -e "create database IF NOT EXISTS testing;" -uroot
+  - mysql -e "create user tester@localhost identified by 'password';" -uroot
+  - mysql -e "grant all privileges on testing.* to tester@localhost;" -uroot
+  - mysql -e "flush privileges;" -uroot
 
 install:
   - composer install --prefer-source --no-interaction --dev
