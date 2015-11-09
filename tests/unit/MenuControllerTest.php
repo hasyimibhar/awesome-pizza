@@ -3,7 +3,7 @@
 use AwesomePizza\Http\Controllers\MenuController;
 use AwesomePizza\Menu\PizzaRepositoryContract;
 use \Mockery as m;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection;
 use Illuminate\Http\Request;
 use AwesomePizza\Menu\Pizza;
 use AwesomePizza\Menu\Crust;

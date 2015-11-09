@@ -2,9 +2,21 @@
 
 namespace AwesomePizza\Menu;
 
-use Illuminate\Database\Eloquent\Model;
+use AwesomePizza\Model;
 
 class ServingSize extends Model
 {
-    protected $fillable = ['id', 'name', 'price'];
+    /**
+     * Serving size name.
+     *
+     * @var string
+     */
+    public $name;
+
+    /**
+     * Serving size price in cents.
+     *
+     * @var int
+     */
+    public $price;
 }

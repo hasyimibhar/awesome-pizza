@@ -21,7 +21,7 @@ class MenuController extends Controller
      *
      * @param \Illuminate\Http\Request $request
      * @param \AwesomePizza\Menu\PizzaRepositoryContract $pizzaRepository
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return \Illuminate\Support\Collection
      */
     public function getPizzas(
         Request $request,
@@ -63,7 +63,7 @@ class MenuController extends Controller
      * Get all available crusts on the menu.
      *
      * @param \AwesomePizza\Menu\CrustRepositoryContract $crustRepository
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return \Illuminate\Support\Collection
      */
     public function getCrusts(CrustRepositoryContract $crustRepository)
     {
@@ -92,7 +92,7 @@ class MenuController extends Controller
      * Get all possible serving sizes on the menu.
      *
      * @param \AwesomePizza\Menu\ServingSizeRepositoryContract $servingSizeRepository
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return \Illuminate\Support\Collection
      */
     public function getServingSizes(ServingSizeRepositoryContract $servingSizeRepository)
     {
@@ -121,7 +121,7 @@ class MenuController extends Controller
      * Get all possible toppings on the menu.
      *
      * @param \AwesomePizza\Menu\ToppingRepositoryContract $toppingRepository
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return \Illuminate\Support\Collection
      */
     public function getToppings(ToppingRepositoryContract $toppingRepository)
     {

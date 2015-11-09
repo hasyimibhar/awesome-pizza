@@ -2,35 +2,39 @@
 
 namespace AwesomePizza\Menu;
 
-use AwesomePizza\Menu\Crust;
+use Illuminate\Database\ConnectionInterface as DatabaseConnectionContract;
+use Illuminate\Support\Collection;
 
 class CrustRepository implements CrustRepositoryContract
 {
     /**
-     * Crust model.
+     * Database connection.
      *
-     * @var \AwesomePizza\Menu\Crust
+     * @var \Illuminate\Database\ConnectionInterface
      */
-    protected $model;
+    protected $database;
 
     /**
      * Creates a new instance of CrustRepository.
      *
-     * @param \AwesomePizza\Menu\Crust $model
+     * @param \Illuminate\Database\ConnectionInterface $database
      */
-    public function __construct(Crust $model)
+    public function __construct(DatabaseConnectionContract $database)
     {
-        $this->model = $model;
+        $this->database = $database;
     }
 
     /**
      * Get all crusts.
      *
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return \Illuminate\Support\Collection
      */
     public function all()
     {
-        return $this->model->all();
+        return with(new Collection($this->database->table('crusts')->get()))
+            ->map(function ($attributes) {
+                return new Crust($attributes);
+            });
     }
 
     /**
@@ -41,6 +45,14 @@ class CrustRepository implements CrustRepositoryContract
      */
     public function find($crustId)
     {
-        return $this->model->find($crustId);
+        $row = $this->database->table('crusts')
+            ->where('id', $crustId)
+            ->first();
+
+        if ($row != null) {
+            return new Crust($row);
+        } else {
+            return null;
+        }
     }
 }

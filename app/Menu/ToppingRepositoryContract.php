@@ -7,7 +7,7 @@ interface ToppingRepositoryContract
     /**
      * Get all toppings.
      *
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return \Illuminate\Support\Collection
      */
     public function all();
 

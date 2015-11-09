@@ -2,7 +2,7 @@
 
 namespace AwesomePizza\Menu;
 
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection;
 
 interface PizzaPriceCalculatorContract
 {
@@ -11,7 +11,7 @@ interface PizzaPriceCalculatorContract
      *
      * @param \AwesomePizza\MenuServingSize $size
      * @param \AwesomePizza\MenuCrust $crust
-     * @param \Illuminate\Database\Eloquent\Collection $toppings
+     * @param \Illuminate\Support\Collection $toppings
      * @return int
      */
     public function calculate(ServingSize $size, Crust $crust, Collection $toppings);

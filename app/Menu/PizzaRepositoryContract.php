@@ -7,7 +7,7 @@ interface PizzaRepositoryContract
     /**
      * Get all pizzas.
      *
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return \Illuminate\Support\Collection
      */
     public function all();
 
@@ -16,7 +16,7 @@ interface PizzaRepositoryContract
      *
      * @param int $quantity
      * @param int $offset
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return \Illuminate\Support\Collection
      */
     public function take($quantity, $offset);
 

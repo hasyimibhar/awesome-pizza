@@ -2,33 +2,39 @@
 
 namespace AwesomePizza\Menu;
 
+use Illuminate\Database\ConnectionInterface as DatabaseConnectionContract;
+use Illuminate\Support\Collection;
+
 class ServingSizeRepository implements ServingSizeRepositoryContract
 {
     /**
-     * Serving size model.
+     * Database connection.
      *
-     * @var \AwesomePizza\Menu\ServingSize
+     * @var \Illuminate\Database\ConnectionInterface
      */
-    protected $model;
+    protected $database;
 
     /**
-     * Creates a new instance of ServingSizeRepository.
+     * Creates a new instance of CrustRepository.
      *
-     * @param \AwesomePizza\Menu\ServingSize $model
+     * @param \Illuminate\Database\ConnectionInterface $database
      */
-    public function __construct(ServingSize $model)
+    public function __construct(DatabaseConnectionContract $database)
     {
-        $this->model = $model;
+        $this->database = $database;
     }
 
     /**
      * Get all serving sizes.
      *
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return \Illuminate\Support\Collection
      */
     public function all()
     {
-        return $this->model->all();
+        return with(new Collection($this->database->table('serving_sizes')->get()))
+            ->map(function ($attributes) {
+                return new ServingSize($attributes);
+            });
     }
 
     /**
@@ -39,6 +45,14 @@ class ServingSizeRepository implements ServingSizeRepositoryContract
      */
     public function find($sizeId)
     {
-        return $this->model->find($sizeId);
+        $row = $this->database->table('serving_sizes')
+            ->where('id', $sizeId)
+            ->first();
+
+        if ($row != null) {
+            return new ServingSize($row);
+        } else {
+            return null;
+        }
     }
 }

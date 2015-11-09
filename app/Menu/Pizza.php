@@ -2,9 +2,14 @@
 
 namespace AwesomePizza\Menu;
 
-use Illuminate\Database\Eloquent\Model;
+use AwesomePizza\Model;
 
 class Pizza extends Model
 {
-    protected $fillable = ['id', 'name'];
+    /**
+     * Pizza name.
+     *
+     * @var string
+     */
+    public $name;
 }

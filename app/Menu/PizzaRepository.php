@@ -2,35 +2,39 @@
 
 namespace AwesomePizza\Menu;
 
-use AwesomePizza\Menu\Pizza;
+use Illuminate\Database\ConnectionInterface as DatabaseConnectionContract;
+use Illuminate\Support\Collection;
 
 class PizzaRepository implements PizzaRepositoryContract
 {
     /**
-     * Pizza model.
+     * Database connection.
      *
-     * @var \AwesomePizza\Menu\Pizza
+     * @var \Illuminate\Database\ConnectionInterface
      */
-    protected $model;
+    protected $database;
 
     /**
-     * Creates a new instance of PizzaRepository.
+     * Creates a new instance of CrustRepository.
      *
-     * @param \AwesomePizza\Menu\Pizza $model
+     * @param \Illuminate\Database\ConnectionInterface $database
      */
-    public function __construct(Pizza $model)
+    public function __construct(DatabaseConnectionContract $database)
     {
-        $this->model = $model;
+        $this->database = $database;
     }
 
     /**
      * Get all pizzas.
      *
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return \Illuminate\Support\Collection
      */
     public function all()
     {
-        return $this->model->all();
+        return with(new Collection($this->database->table('pizzas')->get()))
+            ->map(function ($attributes) {
+                return new Pizza($attributes);
+            });
     }
 
     /**
@@ -38,14 +42,17 @@ class PizzaRepository implements PizzaRepositoryContract
      *
      * @param int $quantity
      * @param int $offset
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return \Illuminate\Support\Collection
      */
     public function take($quantity, $offset)
     {
-        return $this->model->query()
-            ->take($quantity)
-            ->skip($offset * $quantity)
-            ->get();
+        return with(new Collection($this->database->table('pizzas')
+                ->take($quantity)
+                ->skip($offset * $quantity)
+                ->get()))
+            ->map(function ($attributes) {
+                return new Pizza($attributes);
+            });
     }
 
     /**
@@ -56,6 +63,14 @@ class PizzaRepository implements PizzaRepositoryContract
      */
     public function find($pizzaId)
     {
-        return $this->model->find($pizzaId);
+        $row = $this->database->table('pizzas')
+            ->where('id', $pizzaId)
+            ->first();
+
+        if ($row != null) {
+            return new Pizza($row);
+        } else {
+            return null;
+        }
     }
 }

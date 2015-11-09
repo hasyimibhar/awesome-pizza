@@ -2,9 +2,21 @@
 
 namespace AwesomePizza\Menu;
 
-use Illuminate\Database\Eloquent\Model;
+use AwesomePizza\Model;
 
 class Crust extends Model
 {
-    protected $fillable = ['id', 'name', 'price'];
+    /**
+     * Crust name.
+     *
+     * @var string
+     */
+    public $name;
+
+    /**
+     * Crust price in cents.
+     *
+     * @var int
+     */
+    public $price;
 }

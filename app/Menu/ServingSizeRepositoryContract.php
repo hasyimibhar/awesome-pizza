@@ -7,7 +7,7 @@ interface ServingSizeRepositoryContract
     /**
      * Get all serving sizes.
      *
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return \Illuminate\Support\Collection
      */
     public function all();
 

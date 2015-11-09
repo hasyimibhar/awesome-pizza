@@ -2,33 +2,39 @@
 
 namespace AwesomePizza\Menu;
 
+use Illuminate\Database\ConnectionInterface as DatabaseConnectionContract;
+use Illuminate\Support\Collection;
+
 class ToppingRepository implements ToppingRepositoryContract
 {
     /**
-     * Topping model.
+     * Database connection.
      *
-     * @var \AwesomePizza\Menu\Topping
+     * @var \Illuminate\Database\ConnectionInterface
      */
-    protected $model;
+    protected $database;
 
     /**
-     * Creates a new instance of ToppingRepository.
+     * Creates a new instance of CrustRepository.
      *
-     * @param \AwesomePizza\Menu\Topping $model
+     * @param \Illuminate\Database\ConnectionInterface $database
      */
-    public function __construct(Topping $model)
+    public function __construct(DatabaseConnectionContract $database)
     {
-        $this->model = $model;
+        $this->database = $database;
     }
 
     /**
      * Get all toppings.
      *
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return \Illuminate\Support\Collection
      */
     public function all()
     {
-        return $this->model->all();
+        return with(new Collection($this->database->table('toppings')->get()))
+            ->map(function ($attributes) {
+                return new Topping($attributes);
+            });
     }
 
     /**
@@ -39,6 +45,14 @@ class ToppingRepository implements ToppingRepositoryContract
      */
     public function find($toppingId)
     {
-        return $this->model->find($toppingId);
+        $row = $this->database->table('toppings')
+            ->where('id', $toppingId)
+            ->first();
+
+        if ($row != null) {
+            return new Topping($row);
+        } else {
+            return null;
+        }
     }
 }
