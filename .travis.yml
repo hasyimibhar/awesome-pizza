@@ -13,7 +13,8 @@ before_install:
 
 install:
   - composer install --prefer-source --no-interaction --dev
-  - cp .env.example .env
+  - rm -f .env
+  - cp .env.travis .env
 
 before_script:
   - ./vendor/bin/codecept clean
@@ -21,6 +22,3 @@ before_script:
 
 script:
   - ./vendor/bin/codecept run
-
-env:
-  - DB_DATABASE_TESTING=testing DB_USERNAME_TESTING=root DB_PASSWORD_TESTING=
