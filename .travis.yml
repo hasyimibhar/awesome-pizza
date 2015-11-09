@@ -23,6 +23,4 @@ script:
   - ./vendor/bin/codecept run
 
 env:
-  - DB_DATABASE_TESTING=testing
-  - DB_USERNAME_TESTING=root
-  - DB_PASSWORD_TESTING=
+  - DB_DATABASE_TESTING=testing DB_USERNAME_TESTING=root DB_PASSWORD_TESTING=
