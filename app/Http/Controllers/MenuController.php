@@ -3,11 +3,15 @@
 namespace AwesomePizza\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Contracts\Validation\Factory as ValidationFactoryContract;
 use AwesomePizza\Menu\PizzaRepositoryContract;
 use AwesomePizza\Menu\CrustRepositoryContract;
 use AwesomePizza\Menu\ServingSizeRepositoryContract;
 use AwesomePizza\Menu\ToppingRepositoryContract;
+use AwesomePizza\Menu\PizzaDefaultToppingRepositoryContract;
+use AwesomePizza\Menu\PizzaPriceCalculatorContract;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class MenuController extends Controller
 {
@@ -15,6 +19,18 @@ class MenuController extends Controller
      * Default quantity of pizzas returned.
      */
     const PIZZAS_PER_PAGE = 10;
+
+    /**
+     * Request validator factory.
+     *
+     * @var \Illuminate\Contracts\Validation\Factory
+     */
+    protected $validatorFactory;
+
+    public function __construct(ValidationFactoryContract $validatorFactory)
+    {
+        $this->validatorFactory = $validatorFactory;
+    }
 
     /**
      * Get all available pizzas on the menu.
@@ -141,6 +157,60 @@ class MenuController extends Controller
 
         if ($topping != null) {
             return $topping;
+        } else {
+            throw new NotFoundHttpException();
+        }
+    }
+
+    /**
+     * Get the details of a pizza of a specific crust and serving size.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param \AwesomePizza\Menu\PizzaDefaultToppingRepositoryContract $pizzaDefaultToppingRepository
+     * @param \AwesomePizza\Menu\PizzaRepositoryContract $pizzaRepository
+     * @param \AwesomePizza\Menu\CrustRepositoryContract $crustRepository
+     * @param \AwesomePizza\Menu\ServingSizeRepositoryContract $servingSizeRepository
+     * @param \AwesomePizza\Menu\ToppingRepositoryContract $toppingRepository
+     * @param \AwesomePizza\Menu\PizzaPriceCalculatorContract $pizzaPriceCalculator
+     * @param int $pizzaId
+     * @return array
+     */
+    public function getPizzaDetails(
+        Request $request,
+        PizzaDefaultToppingRepositoryContract $pizzaDefaultToppingRepository,
+        PizzaRepositoryContract $pizzaRepository,
+        CrustRepositoryContract $crustRepository,
+        ServingSizeRepositoryContract $servingSizeRepository,
+        ToppingRepositoryContract $toppingRepository,
+        PizzaPriceCalculatorContract $pizzaPriceCalculator,
+        $pizzaId)
+    {
+        $this->validate($this->validatorFactory, $request, [
+            'crust_id' => 'required|numeric',
+            'size_id' => 'required|numeric',
+        ]);
+
+        $pizza = $pizzaRepository->find($pizzaId);
+        if ($pizza != null) {
+            $crust = $crustRepository->find($request->input('crust_id'));
+            if ($crust == null) {
+                throw new BadRequestHttpException('Invalid crust');
+            }
+
+            $size = $servingSizeRepository->find($request->input('size_id'));
+            if ($size == null) {
+                throw new BadRequestHttpException('Invalid serving size');
+            }
+
+            $toppingIds = $pizzaDefaultToppingRepository->all($pizza)->lists('topping_id')->toArray();
+            $toppings = $toppingRepository->findMany($toppingIds);
+
+            $price = $pizzaPriceCalculator->calculate($size, $crust, $toppings);
+
+            return [
+                'price' => $price,
+            ];
+
         } else {
             throw new NotFoundHttpException();
         }

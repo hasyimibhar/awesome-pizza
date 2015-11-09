@@ -24,6 +24,8 @@ class MenuServiceProvider extends ServiceProvider
         $this->app->bind('AwesomePizza\Menu\CrustRepositoryContract', 'AwesomePizza\Menu\CrustRepository');
         $this->app->bind('AwesomePizza\Menu\ServingSizeRepositoryContract', 'AwesomePizza\Menu\ServingSizeRepository');
         $this->app->bind('AwesomePizza\Menu\ToppingRepositoryContract', 'AwesomePizza\Menu\ToppingRepository');
+        $this->app->bind('AwesomePizza\Menu\PizzaDefaultToppingRepositoryContract', 'AwesomePizza\Menu\PizzaDefaultToppingRepository');
+        $this->app->bind('AwesomePizza\Menu\PizzaPriceCalculatorContract', 'AwesomePizza\Menu\PizzaPriceCalculator');
     }
 
     /**
@@ -38,6 +40,8 @@ class MenuServiceProvider extends ServiceProvider
             'AwesomePizza\Menu\CrustRepositoryContract',
             'AwesomePizza\Menu\ServingSizeRepositoryContract',
             'AwesomePizza\Menu\ToppingRepositoryContract',
+            'AwesomePizza\Menu\PizzaDefaultToppingRepositoryContract',
+            'AwesomePizza\Menu\PizzaPriceCalculatorContract',
         ];
     }
 }

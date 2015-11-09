@@ -4,11 +4,13 @@ use AwesomePizza\Http\Controllers\MenuController;
 use AwesomePizza\Menu\PizzaRepositoryContract;
 use \Mockery as m;
 use Illuminate\Support\Collection;
+use Illuminate\Support\MessageBag;
 use Illuminate\Http\Request;
 use AwesomePizza\Menu\Pizza;
 use AwesomePizza\Menu\Crust;
 use AwesomePizza\Menu\ServingSize;
 use AwesomePizza\Menu\Topping;
+use AwesomePizza\Menu\PizzaDefaultTopping;
 
 class MenuControllerTest extends \Codeception\TestCase\Test
 {
@@ -26,7 +28,7 @@ class MenuControllerTest extends \Codeception\TestCase\Test
 
     public function testGetPizzasReturnsNoPizza()
     {
-        $controller = new MenuController();
+        $controller = new MenuController(m::mock('Illuminate\Contracts\Validation\Factory'));
         $pizzaRepository = m::mock('AwesomePizza\Menu\PizzaRepositoryContract')
             ->shouldReceive('take')
             ->with(MenuController::PIZZAS_PER_PAGE, 0)
@@ -42,7 +44,7 @@ class MenuControllerTest extends \Codeception\TestCase\Test
 
     public function testGetPizzasReturnsOnePizza()
     {
-        $controller = new MenuController();
+        $controller = new MenuController(m::mock('Illuminate\Contracts\Validation\Factory'));
         $pizzaRepository = m::mock('AwesomePizza\Menu\PizzaRepositoryContract')
             ->shouldReceive('take')
             ->with(MenuController::PIZZAS_PER_PAGE, 0)
@@ -58,7 +60,7 @@ class MenuControllerTest extends \Codeception\TestCase\Test
 
     public function testGetPizzasReturnsSomePizzas()
     {
-        $controller = new MenuController();
+        $controller = new MenuController(m::mock('Illuminate\Contracts\Validation\Factory'));
         $pizzaRepository = m::mock('AwesomePizza\Menu\PizzaRepositoryContract')
             ->shouldReceive('take')
             ->with(MenuController::PIZZAS_PER_PAGE, 0)
@@ -77,7 +79,7 @@ class MenuControllerTest extends \Codeception\TestCase\Test
         $tonsOfPizzas = new Collection();
 
         $this->specify("take should be called", function() {
-            $controller = new MenuController();
+            $controller = new MenuController(m::mock('Illuminate\Contracts\Validation\Factory'));
             $pizzaRepository = m::mock('AwesomePizza\Menu\PizzaRepositoryContract')
                 ->shouldReceive('take')
                 ->with(10, 0)
@@ -95,7 +97,7 @@ class MenuControllerTest extends \Codeception\TestCase\Test
         });
 
         $this->specify("take should be called", function() {
-            $controller = new MenuController();
+            $controller = new MenuController(m::mock('Illuminate\Contracts\Validation\Factory'));
             $pizzaRepository = m::mock('AwesomePizza\Menu\PizzaRepositoryContract')
                 ->shouldReceive('take')
                 ->with(7, 5)
@@ -116,7 +118,7 @@ class MenuControllerTest extends \Codeception\TestCase\Test
     public function testGetPizzasOutsideOfRange()
     {
         $this->specify("when zero quantity is passed, the default quantity should be used", function() {
-            $controller = new MenuController();
+            $controller = new MenuController(m::mock('Illuminate\Contracts\Validation\Factory'));
             $pizzaRepository = m::mock('AwesomePizza\Menu\PizzaRepositoryContract')
                 ->shouldReceive('take')
                 ->with(MenuController::PIZZAS_PER_PAGE, 0)
@@ -134,7 +136,7 @@ class MenuControllerTest extends \Codeception\TestCase\Test
         });
 
         $this->specify("when negative quantity is passed, the default quantity should be used", function() {
-            $controller = new MenuController();
+            $controller = new MenuController(m::mock('Illuminate\Contracts\Validation\Factory'));
             $pizzaRepository = m::mock('AwesomePizza\Menu\PizzaRepositoryContract')
                 ->shouldReceive('take')
                 ->with(MenuController::PIZZAS_PER_PAGE, 0)
@@ -152,7 +154,7 @@ class MenuControllerTest extends \Codeception\TestCase\Test
         });
 
         $this->specify("when negative offset is passed, the default offset should be used", function() {
-            $controller = new MenuController();
+            $controller = new MenuController(m::mock('Illuminate\Contracts\Validation\Factory'));
             $pizzaRepository = m::mock('AwesomePizza\Menu\PizzaRepositoryContract')
                 ->shouldReceive('take')
                 ->with(8, 0)
@@ -170,7 +172,7 @@ class MenuControllerTest extends \Codeception\TestCase\Test
         });
 
         $this->specify("when negative offset is passed and zero quantity is passed, the default values should be used", function() {
-            $controller = new MenuController();
+            $controller = new MenuController(m::mock('Illuminate\Contracts\Validation\Factory'));
             $pizzaRepository = m::mock('AwesomePizza\Menu\PizzaRepositoryContract')
                 ->shouldReceive('take')
                 ->with(MenuController::PIZZAS_PER_PAGE, 0)
@@ -188,7 +190,7 @@ class MenuControllerTest extends \Codeception\TestCase\Test
         });
 
         $this->specify("when negative offset is passed and negative quantity is passed, the default values should be used", function() {
-            $controller = new MenuController();
+            $controller = new MenuController(m::mock('Illuminate\Contracts\Validation\Factory'));
             $pizzaRepository = m::mock('AwesomePizza\Menu\PizzaRepositoryContract')
                 ->shouldReceive('take')
                 ->with(MenuController::PIZZAS_PER_PAGE, 0)
@@ -208,7 +210,7 @@ class MenuControllerTest extends \Codeception\TestCase\Test
     public function testGetPizzasWithNonNumeric()
     {
         $this->specify("when string quantity is passed, the default value should be used", function() {
-            $controller = new MenuController();
+            $controller = new MenuController(m::mock('Illuminate\Contracts\Validation\Factory'));
             $pizzaRepository = m::mock('AwesomePizza\Menu\PizzaRepositoryContract')
                 ->shouldReceive('take')
                 ->with(MenuController::PIZZAS_PER_PAGE, 3)
@@ -226,7 +228,7 @@ class MenuControllerTest extends \Codeception\TestCase\Test
         });
 
         $this->specify("when string offset is passed, the default value should be used", function() {
-            $controller = new MenuController();
+            $controller = new MenuController(m::mock('Illuminate\Contracts\Validation\Factory'));
             $pizzaRepository = m::mock('AwesomePizza\Menu\PizzaRepositoryContract')
                 ->shouldReceive('take')
                 ->with(7, 0)
@@ -244,7 +246,7 @@ class MenuControllerTest extends \Codeception\TestCase\Test
         });
 
         $this->specify("when string quantity and offset are passed, the default values should be used", function() {
-            $controller = new MenuController();
+            $controller = new MenuController(m::mock('Illuminate\Contracts\Validation\Factory'));
             $pizzaRepository = m::mock('AwesomePizza\Menu\PizzaRepositoryContract')
                 ->shouldReceive('take')
                 ->with(MenuController::PIZZAS_PER_PAGE, 0)
@@ -265,7 +267,7 @@ class MenuControllerTest extends \Codeception\TestCase\Test
     public function testGetPizzaReturnsOnePizza()
     {
         $this->specify("getPizza should return one pizza", function() {
-            $controller = new MenuController();
+            $controller = new MenuController(m::mock('Illuminate\Contracts\Validation\Factory'));
             $pizzaRepository = m::mock('AwesomePizza\Menu\PizzaRepositoryContract')
                 ->shouldReceive('find')
                 ->with(42)
@@ -283,7 +285,7 @@ class MenuControllerTest extends \Codeception\TestCase\Test
     public function testGetPizzaReturnsNoPizza()
     {
         $this->specify("getPizzas should throw NotFoundHttpException", function() {
-            $controller = new MenuController();
+            $controller = new MenuController(m::mock('Illuminate\Contracts\Validation\Factory'));
             $pizzaRepository = m::mock('AwesomePizza\Menu\PizzaRepositoryContract')
                 ->shouldReceive('find')
                 ->with(456)
@@ -298,7 +300,7 @@ class MenuControllerTest extends \Codeception\TestCase\Test
     public function testGetPizzaWithNonNumeric()
     {
         $this->specify("getPizzas should throw NotFoundHttpException", function() {
-            $controller = new MenuController();
+            $controller = new MenuController(m::mock('Illuminate\Contracts\Validation\Factory'));
             $pizzaRepository = m::mock('AwesomePizza\Menu\PizzaRepositoryContract')
                 ->shouldReceive('find')
                 ->with('test')
@@ -313,7 +315,7 @@ class MenuControllerTest extends \Codeception\TestCase\Test
     public function testGetCrustsReturnsNoCrust()
     {
         $this->specify("getCrusts should return empty collection", function() {
-            $controller = new MenuController();
+            $controller = new MenuController(m::mock('Illuminate\Contracts\Validation\Factory'));
             $crustRepository = m::mock('AwesomePizza\Menu\CrustRepositoryContract')
                 ->shouldReceive('all')
                 ->once()
@@ -330,7 +332,7 @@ class MenuControllerTest extends \Codeception\TestCase\Test
     public function testGetCrustsReturnsOneCrust()
     {
         $this->specify("getCrusts should return one crust", function() {
-            $controller = new MenuController();
+            $controller = new MenuController(m::mock('Illuminate\Contracts\Validation\Factory'));
             $crustRepository = m::mock('AwesomePizza\Menu\CrustRepositoryContract')
                 ->shouldReceive('all')
                 ->once()
@@ -347,7 +349,7 @@ class MenuControllerTest extends \Codeception\TestCase\Test
     public function testGetCrustsReturnsSomeCrusts()
     {
         $this->specify("getCrusts should return empty collection", function() {
-            $controller = new MenuController();
+            $controller = new MenuController(m::mock('Illuminate\Contracts\Validation\Factory'));
             $crustRepository = m::mock('AwesomePizza\Menu\CrustRepositoryContract')
                 ->shouldReceive('all')
                 ->once()
@@ -364,7 +366,7 @@ class MenuControllerTest extends \Codeception\TestCase\Test
     public function testGetCrustReturnsOneCrust()
     {
         $this->specify("getCrust should return one crust", function() {
-            $controller = new MenuController();
+            $controller = new MenuController(m::mock('Illuminate\Contracts\Validation\Factory'));
             $crustRepository = m::mock('AwesomePizza\Menu\CrustRepositoryContract')
                 ->shouldReceive('find')
                 ->with(123)
@@ -382,7 +384,7 @@ class MenuControllerTest extends \Codeception\TestCase\Test
     public function testGetCrustReturnsNoCrust()
     {
         $this->specify("getCrust should throw NotFoundHttpException", function() {
-            $controller = new MenuController();
+            $controller = new MenuController(m::mock('Illuminate\Contracts\Validation\Factory'));
             $crustRepository = m::mock('AwesomePizza\Menu\CrustRepositoryContract')
                 ->shouldReceive('find')
                 ->with(456)
@@ -397,7 +399,7 @@ class MenuControllerTest extends \Codeception\TestCase\Test
     public function testGetCrustWithNonNumeric()
     {
         $this->specify("getCrust should throw NotFoundHttpException", function() {
-            $controller = new MenuController();
+            $controller = new MenuController(m::mock('Illuminate\Contracts\Validation\Factory'));
             $crustRepository = m::mock('AwesomePizza\Menu\CrustRepositoryContract')
                 ->shouldReceive('find')
                 ->with('test')
@@ -412,7 +414,7 @@ class MenuControllerTest extends \Codeception\TestCase\Test
     public function testGetServingSizesReturnsNoSize()
     {
         $this->specify("getServingSizes should return empty collection", function() {
-            $controller = new MenuController();
+            $controller = new MenuController(m::mock('Illuminate\Contracts\Validation\Factory'));
             $sizeRepository = m::mock('AwesomePizza\Menu\ServingSizeRepositoryContract')
                 ->shouldReceive('all')
                 ->once()
@@ -429,7 +431,7 @@ class MenuControllerTest extends \Codeception\TestCase\Test
     public function testGetServingSizesReturnsOneSize()
     {
         $this->specify("getServingSizes should return one size", function() {
-            $controller = new MenuController();
+            $controller = new MenuController(m::mock('Illuminate\Contracts\Validation\Factory'));
             $sizeRepository = m::mock('AwesomePizza\Menu\ServingSizeRepositoryContract')
                 ->shouldReceive('all')
                 ->once()
@@ -446,7 +448,7 @@ class MenuControllerTest extends \Codeception\TestCase\Test
     public function testGetServingSizesReturnsSomeSizes()
     {
         $this->specify("getServingSizes should return some sizes", function() {
-            $controller = new MenuController();
+            $controller = new MenuController(m::mock('Illuminate\Contracts\Validation\Factory'));
             $sizeRepository = m::mock('AwesomePizza\Menu\ServingSizeRepositoryContract')
                 ->shouldReceive('all')
                 ->once()
@@ -463,7 +465,7 @@ class MenuControllerTest extends \Codeception\TestCase\Test
     public function testGetServingSizeReturnsOneSize()
     {
         $this->specify("getServingSize should return one crust", function() {
-            $controller = new MenuController();
+            $controller = new MenuController(m::mock('Illuminate\Contracts\Validation\Factory'));
             $servingSizeRepository = m::mock('AwesomePizza\Menu\ServingSizeRepositoryContract')
                 ->shouldReceive('find')
                 ->with(4582)
@@ -481,7 +483,7 @@ class MenuControllerTest extends \Codeception\TestCase\Test
     public function testGetServingSizeReturnsNoSize()
     {
         $this->specify("getServingSize should throw NotFoundHttpException", function() {
-            $controller = new MenuController();
+            $controller = new MenuController(m::mock('Illuminate\Contracts\Validation\Factory'));
             $servingSizeRepository = m::mock('AwesomePizza\Menu\ServingSizeRepositoryContract')
                 ->shouldReceive('find')
                 ->with(77)
@@ -496,7 +498,7 @@ class MenuControllerTest extends \Codeception\TestCase\Test
     public function testGetServingSizeWithNonNumeric()
     {
         $this->specify("getServingSize should throw NotFoundHttpException", function() {
-            $controller = new MenuController();
+            $controller = new MenuController(m::mock('Illuminate\Contracts\Validation\Factory'));
             $servingSizeRepository = m::mock('AwesomePizza\Menu\ServingSizeRepositoryContract')
                 ->shouldReceive('find')
                 ->with('nope')
@@ -511,7 +513,7 @@ class MenuControllerTest extends \Codeception\TestCase\Test
     public function testGetToppingsReturnsNoTopping()
     {
         $this->specify("getToppings should return empty collection", function() {
-            $controller = new MenuController();
+            $controller = new MenuController(m::mock('Illuminate\Contracts\Validation\Factory'));
             $toppingRepository = m::mock('AwesomePizza\Menu\ToppingRepositoryContract')
                 ->shouldReceive('all')
                 ->once()
@@ -528,7 +530,7 @@ class MenuControllerTest extends \Codeception\TestCase\Test
     public function testGetToppingsReturnsOneTopping()
     {
         $this->specify("getToppings should return one topping", function() {
-            $controller = new MenuController();
+            $controller = new MenuController(m::mock('Illuminate\Contracts\Validation\Factory'));
             $toppingRepository = m::mock('AwesomePizza\Menu\ToppingRepositoryContract')
                 ->shouldReceive('all')
                 ->once()
@@ -545,7 +547,7 @@ class MenuControllerTest extends \Codeception\TestCase\Test
     public function testGetToppingsReturnsSomeToppings()
     {
         $this->specify("getToppings should return some toppings", function() {
-            $controller = new MenuController();
+            $controller = new MenuController(m::mock('Illuminate\Contracts\Validation\Factory'));
             $toppingRepository = m::mock('AwesomePizza\Menu\ToppingRepositoryContract')
                 ->shouldReceive('all')
                 ->once()
@@ -562,7 +564,7 @@ class MenuControllerTest extends \Codeception\TestCase\Test
     public function testGetToppingReturnsOneTopping()
     {
         $this->specify("getTopping should return one crust", function() {
-            $controller = new MenuController();
+            $controller = new MenuController(m::mock('Illuminate\Contracts\Validation\Factory'));
             $toppingRepository = m::mock('AwesomePizza\Menu\ToppingRepositoryContract')
                 ->shouldReceive('find')
                 ->with(53)
@@ -580,7 +582,7 @@ class MenuControllerTest extends \Codeception\TestCase\Test
     public function testGetToppingReturnsNoTopping()
     {
         $this->specify("getTopping should throw NotFoundHttpException", function() {
-            $controller = new MenuController();
+            $controller = new MenuController(m::mock('Illuminate\Contracts\Validation\Factory'));
             $toppingRepository = m::mock('AwesomePizza\Menu\ToppingRepositoryContract')
                 ->shouldReceive('find')
                 ->with(91)
@@ -595,7 +597,7 @@ class MenuControllerTest extends \Codeception\TestCase\Test
     public function testGetToppingWithNonNumeric()
     {
         $this->specify("getTopping should throw NotFoundHttpException", function() {
-            $controller = new MenuController();
+            $controller = new MenuController(m::mock('Illuminate\Contracts\Validation\Factory'));
             $toppingRepository = m::mock('AwesomePizza\Menu\ToppingRepositoryContract')
                 ->shouldReceive('find')
                 ->with('hello, world')
@@ -605,6 +607,369 @@ class MenuControllerTest extends \Codeception\TestCase\Test
 
             $controller->getTopping($toppingRepository, 'hello, world');
         }, ['throws' => 'Symfony\Component\HttpKernel\Exception\NotFoundHttpException']);
+    }
+
+    public function testGetPizzaDetails()
+    {
+        $this->specify("getPizzaDetails should return price and toppings", function() {
+            $validator = m::mock('Illuminate\Contracts\Validation\Validator')
+                ->shouldReceive('fails')
+                ->once()
+                ->andReturn(false)
+                ->mock();
+
+            $validatorFactory = m::mock('Illuminate\Contracts\Validation\Factory')
+                ->shouldReceive('make')
+                ->with([
+                    'crust_id' => 123,
+                    'size_id' => 4582,
+                ], [
+                    'crust_id' => 'required|numeric',
+                    'size_id' => 'required|numeric',
+                ], [], [])
+                ->once()
+                ->andReturn($validator)
+                ->mock();
+
+            $controller = new MenuController($validatorFactory);
+
+            $pizza = new Pizza(['id' => 123]);
+            $pizzaRepository = m::mock('AwesomePizza\Menu\PizzaRepositoryContract')
+                ->shouldReceive('find')
+                ->with(123)
+                ->once()
+                ->andReturn($pizza)
+                ->mock();
+
+            $pizzaDefaultToppingRepository = m::mock('AwesomePizza\Menu\PizzaDefaultToppingRepositoryContract')
+                ->shouldReceive('all')
+                ->with($pizza)
+                ->once()
+                ->andReturn(new Collection([
+                    new PizzaDefaultTopping(['pizza_id' => 123, 'topping_id' => 1]),
+                    new PizzaDefaultTopping(['pizza_id' => 123, 'topping_id' => 2]),
+                    new PizzaDefaultTopping(['pizza_id' => 123, 'topping_id' => 3]),
+                ]))
+                ->mock();
+
+            $crust = new Crust(['id' => 123]);
+            $crustRepository = m::mock('AwesomePizza\Menu\CrustRepositoryContract')
+                ->shouldReceive('find')
+                ->with(123)
+                ->once()
+                ->andReturn($crust)
+                ->mock();
+
+            $size = new ServingSize(['id' => 4582]);
+            $servingSizeRepository = m::mock('AwesomePizza\Menu\ServingSizeRepositoryContract')
+                ->shouldReceive('find')
+                ->with(4582)
+                ->once()
+                ->andReturn($size)
+                ->mock();
+
+            $toppings = new Collection([
+                new Topping(['id' => 1]),
+                new Topping(['id' => 2]),
+                new Topping(['id' => 3]),
+            ]);
+            $toppingRepository = m::mock('AwesomePizza\Menu\ToppingRepositoryContract')
+                ->shouldReceive('findMany')
+                ->with([1, 2, 3])
+                ->once()
+                ->andReturn($toppings)
+                ->mock();
+
+            $pizzaPriceCalculator = m::mock('AwesomePizza\Menu\PizzaPriceCalculatorContract')
+                ->shouldReceive('calculate')
+                ->with($size, $crust, $toppings)
+                ->once()
+                ->andReturn(12345)
+                ->mock();
+
+            $detail = $controller->getPizzaDetails(
+                new Request(['crust_id' => 123, 'size_id' => 4582]),
+                $pizzaDefaultToppingRepository,
+                $pizzaRepository,
+                $crustRepository,
+                $servingSizeRepository,
+                $toppingRepository,
+                $pizzaPriceCalculator,
+                123);
+
+            verify($detail)->notNull();
+            verify($detail['price'])->equals(12345);
+        });
+    }
+
+    public function testGetPizzaDetailsWithInvalidPizza()
+    {
+        $this->specify("getPizzaDetails should throw NotFoundHttpException", function() {
+            $validator = m::mock('Illuminate\Contracts\Validation\Validator')
+                ->shouldReceive('fails')
+                ->once()
+                ->andReturn(false)
+                ->mock();
+
+            $validatorFactory = m::mock('Illuminate\Contracts\Validation\Factory')
+                ->shouldReceive('make')
+                ->with([
+                    'crust_id' => 123,
+                    'size_id' => 4582,
+                ], [
+                    'crust_id' => 'required|numeric',
+                    'size_id' => 'required|numeric',
+                ], [], [])
+                ->once()
+                ->andReturn($validator)
+                ->mock();
+
+            $controller = new MenuController($validatorFactory);
+
+            $pizzaDefaultToppingRepository = m::mock('AwesomePizza\Menu\PizzaDefaultToppingRepositoryContract');
+
+            $pizzaRepository = m::mock('AwesomePizza\Menu\PizzaRepositoryContract')
+                ->shouldReceive('find')
+                ->with(123)
+                ->once()
+                ->andReturn(null)
+                ->mock();
+
+            $crustRepository = m::mock('AwesomePizza\Menu\CrustRepositoryContract');
+            $servingSizeRepository = m::mock('AwesomePizza\Menu\ServingSizeRepositoryContract');
+            $toppingRepository = m::mock('AwesomePizza\Menu\ToppingRepositoryContract');
+            $pizzaPriceCalculator = m::mock('AwesomePizza\Menu\PizzaPriceCalculatorContract');
+
+            $controller->getPizzaDetails(
+                new Request(['crust_id' => 123, 'size_id' => 4582]),
+                $pizzaDefaultToppingRepository,
+                $pizzaRepository,
+                $crustRepository,
+                $servingSizeRepository,
+                $toppingRepository,
+                $pizzaPriceCalculator,
+                123);
+        }, ['throws' => 'Symfony\Component\HttpKernel\Exception\NotFoundHttpException']);
+    }
+
+    public function testGetPizzaDetailsWithInvalidParameter()
+    {
+        $this->specify("getPizzaDetails should throw HttpResponseException", function() {
+            $validator = m::mock('Illuminate\Contracts\Validation\Validator')
+                ->shouldReceive('fails')
+                ->once()
+                ->andReturn(true)
+                ->mock();
+            $validator = $validator
+                ->shouldReceive('getMessageBag')
+                ->once()
+                ->andReturn(new MessageBag())
+                ->mock();
+
+            $validatorFactory = m::mock('Illuminate\Contracts\Validation\Factory')
+                ->shouldReceive('make')
+                ->with([
+                    'crust_id' => 123,
+                    'size_id' => 4582,
+                ], [
+                    'crust_id' => 'required|numeric',
+                    'size_id' => 'required|numeric',
+                ], [], [])
+                ->once()
+                ->andReturn($validator)
+                ->mock();
+
+            $controller = new MenuController($validatorFactory);
+
+            $pizzaDefaultToppingRepository = m::mock('AwesomePizza\Menu\PizzaDefaultToppingRepositoryContract');
+            $pizzaRepository = m::mock('AwesomePizza\Menu\PizzaRepositoryContract');
+            $crustRepository = m::mock('AwesomePizza\Menu\CrustRepositoryContract');
+            $servingSizeRepository = m::mock('AwesomePizza\Menu\ServingSizeRepositoryContract');
+            $toppingRepository = m::mock('AwesomePizza\Menu\ToppingRepositoryContract');
+            $pizzaPriceCalculator = m::mock('AwesomePizza\Menu\PizzaPriceCalculatorContract');
+
+            $controller->getPizzaDetails(
+                new Request(['crust_id' => 123, 'size_id' => 4582]),
+                $pizzaDefaultToppingRepository,
+                $pizzaRepository,
+                $crustRepository,
+                $servingSizeRepository,
+                $toppingRepository,
+                $pizzaPriceCalculator,
+                123);
+        }, ['throws' => 'Illuminate\Http\Exception\HttpResponseException']);
+    }
+
+    public function testGetPizzaDetailsWithInvalidCrust()
+    {
+        $this->specify("getPizzaDetails should throw BadRequestHttpException", function() {
+            $validator = m::mock('Illuminate\Contracts\Validation\Validator')
+                ->shouldReceive('fails')
+                ->once()
+                ->andReturn(false)
+                ->mock();
+
+            $validatorFactory = m::mock('Illuminate\Contracts\Validation\Factory')
+                ->shouldReceive('make')
+                ->with([
+                    'crust_id' => 123,
+                    'size_id' => 4582,
+                ], [
+                    'crust_id' => 'required|numeric',
+                    'size_id' => 'required|numeric',
+                ], [], [])
+                ->once()
+                ->andReturn($validator)
+                ->mock();
+
+            $controller = new MenuController($validatorFactory);
+
+            $pizzaDefaultToppingRepository = m::mock('AwesomePizza\Menu\PizzaDefaultToppingRepositoryContract')
+                ->shouldReceive('all')
+                ->with(123)
+                ->once()
+                ->andReturn(new Collection([
+                    new PizzaDefaultTopping(['pizza_id' => 123, 'topping_id' => 1]),
+                    new PizzaDefaultTopping(['pizza_id' => 123, 'topping_id' => 2]),
+                    new PizzaDefaultTopping(['pizza_id' => 123, 'topping_id' => 3]),
+                ]))
+                ->mock();
+
+            $pizzaRepository = m::mock('AwesomePizza\Menu\PizzaRepositoryContract')
+                ->shouldReceive('find')
+                ->with(123)
+                ->once()
+                ->andReturn(new Pizza(['id' => 123]))
+                ->mock();
+
+            $crustRepository = m::mock('AwesomePizza\Menu\CrustRepositoryContract')
+                ->shouldReceive('find')
+                ->with(123)
+                ->once()
+                ->andReturn(null)
+                ->mock();
+
+            $size = new ServingSize(['id' => 4582]);
+            $servingSizeRepository = m::mock('AwesomePizza\Menu\ServingSizeRepositoryContract')
+                ->shouldReceive('find')
+                ->with(4582)
+                ->once()
+                ->andReturn($size)
+                ->mock();
+
+            $toppings = new Collection([
+                new Topping(['id' => 1]),
+                new Topping(['id' => 2]),
+                new Topping(['id' => 3]),
+            ]);
+            $toppingRepository = m::mock('AwesomePizza\Menu\ToppingRepositoryContract')
+                ->shouldReceive('findMany')
+                ->with([1, 2, 3])
+                ->once()
+                ->andReturn($toppings)
+                ->mock();
+
+            $pizzaPriceCalculator = m::mock('AwesomePizza\Menu\PizzaPriceCalculatorContract');
+
+            $controller->getPizzaDetails(
+                new Request(['crust_id' => 123, 'size_id' => 4582]),
+                $pizzaDefaultToppingRepository,
+                $pizzaRepository,
+                $crustRepository,
+                $servingSizeRepository,
+                $toppingRepository,
+                $pizzaPriceCalculator,
+                123);
+        }, ['throws' => [
+            'Symfony\Component\HttpKernel\Exception\BadRequestHttpException',
+            'Invalid crust',
+        ]]);
+    }
+
+    public function testGetPizzaDetailsWithInvalidSize()
+    {
+        $this->specify("getPizzaDetails should throw BadRequestHttpException", function() {
+            $validator = m::mock('Illuminate\Contracts\Validation\Validator')
+                ->shouldReceive('fails')
+                ->once()
+                ->andReturn(false)
+                ->mock();
+
+            $validatorFactory = m::mock('Illuminate\Contracts\Validation\Factory')
+                ->shouldReceive('make')
+                ->with([
+                    'crust_id' => 123,
+                    'size_id' => 4582,
+                ], [
+                    'crust_id' => 'required|numeric',
+                    'size_id' => 'required|numeric',
+                ], [], [])
+                ->once()
+                ->andReturn($validator)
+                ->mock();
+
+            $controller = new MenuController($validatorFactory);
+
+            $pizzaDefaultToppingRepository = m::mock('AwesomePizza\Menu\PizzaDefaultToppingRepositoryContract')
+                ->shouldReceive('all')
+                ->with(123)
+                ->once()
+                ->andReturn(new Collection([
+                    new PizzaDefaultTopping(['pizza_id' => 123, 'topping_id' => 1]),
+                    new PizzaDefaultTopping(['pizza_id' => 123, 'topping_id' => 2]),
+                    new PizzaDefaultTopping(['pizza_id' => 123, 'topping_id' => 3]),
+                ]))
+                ->mock();
+
+            $pizzaRepository = m::mock('AwesomePizza\Menu\PizzaRepositoryContract')
+                ->shouldReceive('find')
+                ->with(123)
+                ->once()
+                ->andReturn(new Pizza(['id' => 123]))
+                ->mock();
+
+            $crust = new Crust(['id' => 123]);
+            $crustRepository = m::mock('AwesomePizza\Menu\CrustRepositoryContract')
+                ->shouldReceive('find')
+                ->with(123)
+                ->once()
+                ->andReturn($crust)
+                ->mock();
+
+            $servingSizeRepository = m::mock('AwesomePizza\Menu\ServingSizeRepositoryContract')
+                ->shouldReceive('find')
+                ->with(4582)
+                ->once()
+                ->andReturn(null)
+                ->mock();
+
+            $toppings = new Collection([
+                new Topping(['id' => 1]),
+                new Topping(['id' => 2]),
+                new Topping(['id' => 3]),
+            ]);
+            $toppingRepository = m::mock('AwesomePizza\Menu\ToppingRepositoryContract')
+                ->shouldReceive('findMany')
+                ->with([1, 2, 3])
+                ->once()
+                ->andReturn($toppings)
+                ->mock();
+
+            $pizzaPriceCalculator = m::mock('AwesomePizza\Menu\PizzaPriceCalculatorContract');
+
+            $controller->getPizzaDetails(
+                new Request(['crust_id' => 123, 'size_id' => 4582]),
+                $pizzaDefaultToppingRepository,
+                $pizzaRepository,
+                $crustRepository,
+                $servingSizeRepository,
+                $toppingRepository,
+                $pizzaPriceCalculator,
+                123);
+        }, ['throws' => [
+            'Symfony\Component\HttpKernel\Exception\BadRequestHttpException',
+            'Invalid serving size',
+        ]]);
     }
 
     protected function generatePizzas($quantity)

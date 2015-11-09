@@ -18,4 +18,12 @@ interface ToppingRepositoryContract
      * @return \AwesomePizza\Menu\Topping
      */
     public function find($toppingId);
+
+    /**
+     * Get toppings with the specified ids.
+     *
+     * @param array $toppingIds
+     * @return \Illuminate\Support\Collection
+     */
+    public function findMany($toppingIds);
 }

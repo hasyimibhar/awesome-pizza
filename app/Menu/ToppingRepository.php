@@ -55,4 +55,18 @@ class ToppingRepository implements ToppingRepositoryContract
             return null;
         }
     }
+
+    /**
+     * Get toppings with the specified ids.
+     *
+     * @param array $toppingIds
+     * @return \Illuminate\Support\Collection
+     */
+    public function findMany($toppingIds)
+    {
+        return with(new Collection($this->database->table('toppings')->whereIn('id', $toppingIds)->get()))
+            ->map(function ($attributes) {
+                return new Topping($attributes);
+            });
+    }
 }
