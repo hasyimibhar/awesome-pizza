@@ -108,6 +108,84 @@ class PizzaRepositoryTest extends \Codeception\TestCase\Test
         });
     }
 
+    public function testFindWithValidId()
+    {
+        $this->specify("find should return one pizza", function() {
+            $now = date('Y-m-d H:i:s');
+            $this->tester->haveInDatabase('pizzas', [
+                'id' => 19,
+                'name' => 'My Pizza',
+                'created_at' => $now,
+                'updated_at' => $now,
+            ]);
+
+            $this->tester->haveInDatabase('pizzas', [
+                'id' => 42,
+                'name' => 'Galaxy Pizza',
+                'created_at' => $now,
+                'updated_at' => $now,
+            ]);
+
+            $repository = new PizzaRepository($this->getDatabaseConnection());
+            $pizza = $repository->find(19);
+
+            verify($pizza)->notNull();
+            verify($pizza->id)->equals(19);
+            verify($pizza->name)->equals('My Pizza');
+            verify($pizza->created_at)->equals($now);
+            verify($pizza->updated_at)->equals($now);
+
+            $pizza = $repository->find(42);
+
+            verify($pizza)->notNull();
+            verify($pizza->id)->equals(42);
+            verify($pizza->name)->equals('Galaxy Pizza');
+            verify($pizza->created_at)->equals($now);
+            verify($pizza->updated_at)->equals($now);
+        });
+    }
+
+    public function testFindWithInvalidId()
+    {
+        $this->specify("find should return one pizza", function() {
+            $now = date('Y-m-d H:i:s');
+            $this->tester->haveInDatabase('pizzas', [
+                'id' => 19,
+                'name' => 'My Pizza',
+                'created_at' => $now,
+                'updated_at' => $now,
+            ]);
+
+            $this->tester->haveInDatabase('pizzas', [
+                'id' => 42,
+                'name' => 'Galaxy Pizza',
+                'created_at' => $now,
+                'updated_at' => $now,
+            ]);
+
+            $repository = new PizzaRepository($this->getDatabaseConnection());
+
+            $pizza = $repository->find(3);
+            verify($pizza)->null();
+
+            $pizza = $repository->find(25);
+            verify($pizza)->null();
+        });
+    }
+
+    public function testFindWithNoPizza()
+    {
+        $this->specify("find should return one pizza", function() {
+            $repository = new PizzaRepository($this->getDatabaseConnection());
+
+            $pizza = $repository->find(19);
+            verify($pizza)->null();
+
+            $pizza = $repository->find(42);
+            verify($pizza)->null();
+        });
+    }
+
     protected function getDatabaseConnection()
     {
         return $this->tester->grabService('Illuminate\Database\ConnectionInterface');
