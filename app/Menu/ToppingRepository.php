@@ -64,7 +64,17 @@ class ToppingRepository implements ToppingRepositoryContract
      */
     public function findMany($toppingIds)
     {
-        return with(new Collection($this->database->table('toppings')->whereIn('id', $toppingIds)->get()))
+        $toppings = $this->database->table('toppings')->whereIn('id', $toppingIds);
+
+        if (count($toppingIds) > 0) {
+            // SQL injection could be possible here...
+            $ids = implode(',', $toppingIds);
+
+            // Make sure the output row is ordered according to the order of toppingIds
+            $toppings =  $toppings->orderByRaw($this->database->raw("FIELD(id, $ids)"));
+        }
+
+        return with(new Collection($toppings->get()))
             ->map(function ($attributes) {
                 return new Topping($attributes);
             });
