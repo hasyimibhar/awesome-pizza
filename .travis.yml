@@ -20,7 +20,7 @@ before_script:
   - ./vendor/bin/codecept build
 
 script:
-  - ./vendor/bin/codecept run unit
+  - ./vendor/bin/codecept run
 
 env:
   - DB_DATABASE_TESTING=testing
