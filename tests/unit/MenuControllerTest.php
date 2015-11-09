@@ -567,13 +567,13 @@ class MenuControllerTest extends \Codeception\TestCase\Test
                 ->shouldReceive('find')
                 ->with(53)
                 ->once()
-                ->andReturn(new ServingSize(['id' => 53]))
+                ->andReturn(new Topping(['id' => 53]))
                 ->mock();
 
-            $crust = $controller->getTopping($toppingRepository, 53);
+            $topping = $controller->getTopping($toppingRepository, 53);
 
-            verify($crust)->notNull();
-            verify($crust->id)->equals(53);
+            verify($topping)->notNull();
+            verify($topping->id)->equals(53);
         });
     }
 
