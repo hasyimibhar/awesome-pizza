@@ -16,12 +16,17 @@ before_install:
 
 install:
   - composer install --prefer-source --no-interaction --dev
+  - composer require satooshi/php-coveralls
   - rm -f .env
   - cp .env.travis .env
 
 before_script:
   - ./vendor/bin/codecept clean
   - ./vendor/bin/codecept build
+  - mkdir -p build/logs
 
 script:
-  - ./vendor/bin/codecept run
+  - ./vendor/bin/codecept run --coverage --coverage-xml
+
+after_success:
+  - ./vendor/bin/coveralls

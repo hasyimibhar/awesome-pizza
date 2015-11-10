@@ -19,3 +19,15 @@ modules:
             user: 'tester'
             password: 'password'
             dump: 'tests/_data/dump.sql'
+coverage:
+    enabled: true
+    whitelist:
+        include:
+            - app/*
+        exclude:
+            - app/Exceptions/*
+            - app/Console/*
+            - app/Providers/*
+            - app/Http/Middleware/*
+            - app/Http/routes.php
+            - app/Menu/*ServiceProvider.php
